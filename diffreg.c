@@ -1354,7 +1354,7 @@ readhash(FILE *f, int flags, unsigned *hash)
 static int
 asciifile(FILE *f)
 {
-	unsigned char buf[BUFSIZ];
+	char buf[BUFSIZ];
 	size_t cnt;
 
 	if (f == NULL)
@@ -1370,7 +1370,7 @@ asciifile(FILE *f)
 static char *
 match_function(const long *f, int pos, FILE *fp)
 {
-	unsigned char buf[FUNCTION_CONTEXT_SIZE];
+	char buf[FUNCTION_CONTEXT_SIZE];
 	size_t nc;
 	int last = lastline;
 	const char *state = NULL;
@@ -1394,8 +1394,8 @@ match_function(const long *f, int pos, FILE *fp)
 			strlcpy(lastbuf, buf, sizeof(lastbuf));
 			lastmatchline = pos;
 			return (lastbuf);
-		} else if (isalpha(buf[0]) || buf[0] == '_' || buf[0] == '$'
-			|| buf[0] == '-' || buf[0] == '+') {
+		} else if (isalpha((unsigned char)buf[0]) || buf[0] == '_' ||
+		    buf[0] == '$' || buf[0] == '-' || buf[0] == '+') {
 			if (begins_with(buf, "private:")) {
 				if (!state)
 					state = " (private)";

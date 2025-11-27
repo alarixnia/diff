@@ -648,9 +648,9 @@ Assuming a file named
 .Pa example.txt
 with the following contents:
 .Bd -literal -offset indent
+NetBSD is an operating system
 FreeBSD is an operating system
 Linux is a kernel
-OpenBSD is an operating system
 .Ed
 .Pp
 Compare stdin with
@@ -658,9 +658,9 @@ Compare stdin with
 excluding from the comparison those lines containing either
 .Qq Linux
 or
-.Qq Open :
+.Qq Free :
 .Bd -literal -offset indent
-$ echo "FreeBSD is an operating system" | diff -q -I 'Linux|Open' example.txt -
+$ echo "NetBSD is an operating system" | diff -q -I 'Linux|Free' example.txt -
 .Ed
 .Sh SEE ALSO
 .Xr cmp 1 ,

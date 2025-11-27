@@ -1600,8 +1600,8 @@ print_header(const char *file1, const char *file2)
 	const char *time_format;
 	char buf[256];
 	struct tm tm1, tm2, *tm_ptr1, *tm_ptr2;
-	int nsec1 = stb1.st_mtim.tv_nsec;
-	int nsec2 = stb2.st_mtim.tv_nsec;
+	long nsec1 = stb1.st_mtim.tv_nsec;
+	long nsec2 = stb2.st_mtim.tv_nsec;
 
 	time_format = "%Y-%m-%d %H:%M:%S";
 
@@ -1618,7 +1618,7 @@ print_header(const char *file1, const char *file2)
 		    file1, buf);
 		if (!cflag) {
 			strftime(buf, sizeof(buf), "%z", tm_ptr1);
-			printf(".%.9d %s", nsec1, buf);
+			printf(".%.9ld %s", nsec1, buf);
 		}
 		printf("\n");
 	}
@@ -1631,7 +1631,7 @@ print_header(const char *file1, const char *file2)
 		    file2, buf);
 		if (!cflag) {
 			strftime(buf, sizeof(buf), "%z", tm_ptr2);
-			printf(".%.9d %s", nsec2, buf);
+			printf(".%.9ld %s", nsec2, buf);
 		}
 		printf("\n");
 	}

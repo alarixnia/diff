@@ -111,6 +111,6 @@ extern struct	stat stb1, stb2;
 extern struct	excludes *excludes_list;
 extern regex_t	ignore_re, most_recent_re;
 
-int	diffreg(char *, char *, int, int);
+int	diffreg(char *, char *, int);
 void	diffdir(char *, char *, int);
 void	print_status(int, char *, char *, const char *);

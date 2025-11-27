@@ -1,11 +1,9 @@
-
-.include <src.opts.mk>
+# $NetBSD$
 
 PROG=	diff
-SRCS=	diff.c diffdir.c diffreg.c xmalloc.c pr.c
-LIBADD=	m
+SRCS=	diff.c diffdir.c diffreg.c xmalloc.c
 
-HAS_TESTS=
-SUBDIR.${MK_TESTS}+= tests
+DPADD+=	${LIBM}
+LDADD+=	-lm
 
 .include <bsd.prog.mk>

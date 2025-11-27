@@ -20,6 +20,7 @@
  * Materiel Command, USAF, under agreement number F39502-99-1-0512.
  */
 
+#define _OPENBSD_SOURCE /* XXX strtonum */
 #include <sys/cdefs.h>
 #include <sys/stat.h>
 
@@ -114,8 +115,8 @@ static struct option longopts[] = {
 };
 
 static void checked_regcomp(char const *, regex_t *);
-static void usage(void) __dead2;
-static void conflicting_format(void) __dead2;
+static void usage(void) __dead;
+static void conflicting_format(void) __dead;
 static void push_excludes(char *);
 static void push_ignore_pats(char *);
 static void read_excludes_file(char *file);
@@ -433,7 +434,7 @@ main(int argc, char **argv)
 			if (stat(argv[1], &stb2) == -1)
 				err(2, "%s", argv[1]);
 		}
-		print_status(diffreg(argv[0], argv[1], dflags, 1), argv[0],
+		print_status(diffreg(argv[0], argv[1], dflags), argv[0],
 		    argv[1], "");
 	}
 	exit(status);

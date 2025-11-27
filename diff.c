@@ -520,18 +520,18 @@ static void
 usage(void)
 {
 	(void)fprintf(stderr,
-	    "usage: diff [-aBbdilpTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
+	    "usage: diff [-aBbdipTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-I pattern] [-F pattern] [-L label] file1 file2\n"
-	    "       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]\n"
+	    "       diff [-aBbdipTtw] [-I pattern] [-L label] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-F pattern] -C number file1 file2\n"
-	    "       diff [-aBbdiltw] [-I pattern] [--ignore-case] [--no-ignore-case]\n"
+	    "       diff [-aBbditw] [-I pattern] [--ignore-case] [--no-ignore-case]\n"
 	    "            [--normal] [--strip-trailing-cr] -D string file1 file2\n"
-	    "       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]\n"
+	    "       diff [-aBbdipTtw] [-I pattern] [-L label] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-F pattern] -U number file1 file2\n"
-	    "       diff [-aBbdilNPprsTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
+	    "       diff [-aBbdiNPprsTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [-I pattern] [-L label]\n"
 	    "            [-F pattern] [-S name] [-X file] [-x pattern] dir1 dir2\n"
 	    "       diff [-aBbditwW] [--expand-tabs] [--ignore-all-space]\n"

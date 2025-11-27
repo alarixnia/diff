@@ -20,7 +20,6 @@
  * Materiel Command, USAF, under agreement number F39502-99-1-0512.
  */
 
-#define _OPENBSD_SOURCE /* XXX strtonum */
 #include <sys/cdefs.h>
 #include <sys/stat.h>
 
@@ -49,7 +48,7 @@ struct stat stb1, stb2;
 struct excludes *excludes_list;
 regex_t	 ignore_re, most_recent_re;
 
-#define	OPTIONS	"0123456789aBbC:cdD:efF:HhI:iL:lnNPpqrS:sTtU:uwW:X:x:y"
+#define	OPTIONS	"0123456789aBbC:cdD:efF:HhI:iL:nNPpqrS:sTtU:uwW:X:x:y"
 enum {
 	OPT_TSIZE = CHAR_MAX + 1,
 	OPT_STRIPCR,
@@ -261,9 +260,14 @@ main(int argc, char **argv)
 			dflags |= D_IGNOREBLANKS;
 			break;
 		case 'W':
-			width = (int) strtonum(optarg, 1, INT_MAX, &errstr);
-			if (errstr)
-				errx(1, "width is %s: %s", errstr, optarg);
+			if (optarg != NULL) {
+				l = strtol(optarg, &ep, 10);
+				if (*ep != '\0' || l < 0 || l >= INT_MAX)
+					usage();
+				width = (int)l;
+			} else {
+				usage();
+			}
 			break;
 		case 'X':
 			read_excludes_file(optarg);

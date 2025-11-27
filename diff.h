@@ -100,7 +100,7 @@ struct excludes {
 };
 
 extern bool	lflag, Nflag, Pflag, rflag, sflag, Tflag, cflag;
-extern bool	ignore_file_case, suppress_common, noderef;
+extern bool	ignore_file_case, suppress_common;
 extern int	diff_format, diff_context, status;
 extern int	width;
 extern char	*start, *ifdefname, *diffargs, *label[2];

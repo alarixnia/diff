@@ -39,7 +39,7 @@
 
 static const char diff_version[] = "FreeBSD diff 20220309";
 bool	 Nflag, Pflag, rflag, sflag, Tflag, cflag;
-bool	 ignore_file_case, suppress_common, noderef;
+bool	 ignore_file_case, suppress_common;
 static bool help = false;
 int	 diff_format, diff_context, status;
 int	 width = 130;
@@ -62,7 +62,6 @@ enum {
 	OPT_HORIZON_LINES,
 	OPT_CHANGED_GROUP_FORMAT,
 	OPT_SUPPRESS_COMMON,
-	OPT_NO_DEREFERENCE,
 	OPT_VERSION,
 };
 
@@ -99,7 +98,6 @@ static struct option longopts[] = {
 	{ "ignore-file-name-case",	no_argument,		NULL,	OPT_IGN_FN_CASE },
 	{ "help",			no_argument,		NULL,	OPT_HELP},
 	{ "horizon-lines",		required_argument,	NULL,	OPT_HORIZON_LINES },
-	{ "no-dereference",		no_argument,		NULL,	OPT_NO_DEREFERENCE},
 	{ "no-ignore-file-name-case",	no_argument,		NULL,	OPT_NO_IGN_FN_CASE },
 	{ "normal",			no_argument,		NULL,	OPT_NORMAL },
 	{ "strip-trailing-cr",		no_argument,		NULL,	OPT_STRIPCR },
@@ -310,9 +308,6 @@ main(int argc, char **argv)
 			break;
 		case OPT_SUPPRESS_COMMON:
 			suppress_common = 1;
-			break;
-		case OPT_NO_DEREFERENCE:
-			noderef = true;
 			break;
 		case OPT_VERSION:
 			printf("%s\n", diff_version);

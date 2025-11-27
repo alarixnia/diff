@@ -38,7 +38,7 @@
 #include "xmalloc.h"
 
 static const char diff_version[] = "FreeBSD diff 20220309";
-bool	 lflag, Nflag, Pflag, rflag, sflag, Tflag, cflag;
+bool	 Nflag, Pflag, rflag, sflag, Tflag, cflag;
 bool	 ignore_file_case, suppress_common, color, noderef;
 static bool help = false;
 int	 diff_format, diff_context, status;
@@ -81,7 +81,6 @@ static struct option longopts[] = {
 	{ "ignore-blank-lines",		no_argument,		0,	'B' },
 	{ "ignore-matching-lines",	required_argument,	0,	'I' },
 	{ "ignore-case",		no_argument,		0,	'i' },
-	{ "paginate",			no_argument,		NULL,	'l' },
 	{ "label",			required_argument,	0,	'L' },
 	{ "new-file",			no_argument,		0,	'N' },
 	{ "rcs",			no_argument,		0,	'n' },
@@ -220,9 +219,6 @@ main(int argc, char **argv)
 				label[1] = optarg;
 			else
 				usage();
-			break;
-		case 'l':
-			lflag = true;
 			break;
 		case 'N':
 			Nflag = true;

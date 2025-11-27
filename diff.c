@@ -42,7 +42,7 @@ bool	 Nflag, Pflag, rflag, sflag, Tflag, cflag;
 bool	 ignore_file_case, suppress_common, color, noderef;
 static bool help = false;
 int	 diff_format, diff_context, status;
-int	 tabsize = 8, width = 130;
+int	 width = 130;
 static int	colorflag = COLORFLAG_NEVER;
 char	*start, *ifdefname, *diffargs, *label[2];
 char	*ignore_pats, *most_recent_pat;
@@ -105,7 +105,6 @@ static struct option longopts[] = {
 	{ "no-ignore-file-name-case",	no_argument,		NULL,	OPT_NO_IGN_FN_CASE },
 	{ "normal",			no_argument,		NULL,	OPT_NORMAL },
 	{ "strip-trailing-cr",		no_argument,		NULL,	OPT_STRIPCR },
-	{ "tabsize",			required_argument,	NULL,	OPT_TSIZE },
 	{ "changed-group-format",	required_argument,	NULL,	OPT_CHANGED_GROUP_FORMAT},
 	{ "suppress-common-lines",	no_argument,		NULL,	OPT_SUPPRESS_COMMON },
 	{ "color",			optional_argument,	NULL,	OPT_COLOR },
@@ -309,11 +308,6 @@ main(int argc, char **argv)
 			if (FORMAT_MISMATCHED(D_NORMAL))
 				conflicting_format();
 			diff_format = D_NORMAL;
-			break;
-		case OPT_TSIZE:
-			tabsize = (int) strtonum(optarg, 1, INT_MAX, &errstr);
-			if (errstr)
-				errx(1, "tabsize is %s: %s", errstr, optarg);
 			break;
 		case OPT_STRIPCR:
 			dflags |= D_STRIPCR;
@@ -576,23 +570,23 @@ usage(void)
 {
 	(void)fprintf(help ? stdout : stderr,
 	    "usage: diff [-aBbdilpTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
-	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr] [--tabsize]\n"
+	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-I pattern] [-F pattern] [-L label] file1 file2\n"
 	    "       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]\n"
-	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr] [--tabsize]\n"
+	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-F pattern] -C number file1 file2\n"
 	    "       diff [-aBbdiltw] [-I pattern] [--ignore-case] [--no-ignore-case]\n"
-	    "            [--normal] [--strip-trailing-cr] [--tabsize] -D string file1 file2\n"
+	    "            [--normal] [--strip-trailing-cr] -D string file1 file2\n"
 	    "       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]\n"
-	    "            [--no-ignore-case] [--normal] [--tabsize] [--strip-trailing-cr]\n"
+	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-F pattern] -U number file1 file2\n"
 	    "       diff [-aBbdilNPprsTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
-	    "            [--no-ignore-case] [--normal] [--tabsize] [-I pattern] [-L label]\n"
+	    "            [--no-ignore-case] [--normal] [-I pattern] [-L label]\n"
 	    "            [-F pattern] [-S name] [-X file] [-x pattern] dir1 dir2\n"
 	    "       diff [-aBbditwW] [--expand-tabs] [--ignore-all-space]\n"
 	    "            [--ignore-blank-lines] [--ignore-case] [--minimal]\n"
 	    "            [--no-ignore-file-name-case] [--strip-trailing-cr]\n"
-	    "            [--suppress-common-lines] [--tabsize] [--text] [--width]\n"
+	    "            [--suppress-common-lines] [--text] [--width]\n"
 	    "            -y | --side-by-side file1 file2\n"
 	    "       diff [--help] [--version]\n");
 

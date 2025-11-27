@@ -166,6 +166,8 @@ struct context_vec {
 	int	d;		/* end line in new file */
 };
 
+const int tabsize = 8;
+
 enum readhash { RH_BINARY, RH_OK, RH_EOF };
 
 static FILE	*opentemp(const char *);

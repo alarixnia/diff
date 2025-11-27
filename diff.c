@@ -37,10 +37,8 @@
 #include "diff.h"
 #include "xmalloc.h"
 
-static const char diff_version[] = "FreeBSD diff 20220309";
 bool	 Nflag, Pflag, rflag, sflag, Tflag, cflag;
 bool	 ignore_file_case, suppress_common;
-static bool help = false;
 int	 diff_format, diff_context, status;
 int	 width = 130;
 char	*start, *ifdefname, *diffargs, *label[2];
@@ -96,14 +94,12 @@ static struct option longopts[] = {
 	{ "exclude-from",		required_argument,	0,	'X' },
 	{ "side-by-side",		no_argument,		NULL,	'y' },
 	{ "ignore-file-name-case",	no_argument,		NULL,	OPT_IGN_FN_CASE },
-	{ "help",			no_argument,		NULL,	OPT_HELP},
 	{ "horizon-lines",		required_argument,	NULL,	OPT_HORIZON_LINES },
 	{ "no-ignore-file-name-case",	no_argument,		NULL,	OPT_NO_IGN_FN_CASE },
 	{ "normal",			no_argument,		NULL,	OPT_NORMAL },
 	{ "strip-trailing-cr",		no_argument,		NULL,	OPT_STRIPCR },
 	{ "changed-group-format",	required_argument,	NULL,	OPT_CHANGED_GROUP_FORMAT},
 	{ "suppress-common-lines",	no_argument,		NULL,	OPT_SUPPRESS_COMMON },
-	{ "version",			no_argument,		NULL,	OPT_VERSION},
 	{ NULL,				0,			0,	'\0'}
 };
 
@@ -286,10 +282,6 @@ main(int argc, char **argv)
 			diff_format = D_GFORMAT;
 			group_format = optarg;
 			break;
-		case OPT_HELP:
-			help = true;
-			usage();
-			break;
 		case OPT_HORIZON_LINES:
 			break; /* XXX TODO for compatibility with GNU diff3 */
 		case OPT_IGN_FN_CASE:
@@ -309,9 +301,6 @@ main(int argc, char **argv)
 		case OPT_SUPPRESS_COMMON:
 			suppress_common = 1;
 			break;
-		case OPT_VERSION:
-			printf("%s\n", diff_version);
-			exit(0);
 		default:
 			usage();
 			break;
@@ -527,7 +516,7 @@ print_status(int val, char *path1, char *path2, const char *entry)
 static void
 usage(void)
 {
-	(void)fprintf(help ? stdout : stderr,
+	(void)fprintf(stderr,
 	    "usage: diff [-aBbdilpTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-I pattern] [-F pattern] [-L label] file1 file2\n"
@@ -546,13 +535,9 @@ usage(void)
 	    "            [--ignore-blank-lines] [--ignore-case] [--minimal]\n"
 	    "            [--no-ignore-file-name-case] [--strip-trailing-cr]\n"
 	    "            [--suppress-common-lines] [--text] [--width]\n"
-	    "            -y | --side-by-side file1 file2\n"
-	    "       diff [--help] [--version]\n");
+	    "            -y | --side-by-side file1 file2\n");
 
-	if (help)
-		exit(0);
-	else
-		exit(2);
+	exit(2);
 }
 
 static void

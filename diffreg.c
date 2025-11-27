@@ -1142,23 +1142,13 @@ proceed:
 		}
 	}
 	if (diff_format == D_SIDEBYSIDE) {
-		if (color && a > b)
-			printf("\033[%sm", add_code);
-		else if (color && c > d)
-			printf("\033[%sm", del_code);
 		if (a > b) {
 			print_space(0, hw + lpad, *pflags);
 		} else {
 			nc = fetch(ixold, a, b, f1, '\0', 1, *pflags);
 			print_space(nc, hw - nc + lpad, *pflags);
 		}
-		if (color && a > b)
-			printf("\033[%sm", add_code);
-		else if (color && c > d)
-			printf("\033[%sm", del_code);
 		printf("%c", (a > b) ? '>' : ((c > d) ? '<' : '|'));
-		if (color && c > d)
-			printf("\033[m");
 		print_space(hw + lpad + 1, rpad, *pflags);
 		fetch(ixnew, c, d, f2, '\0', 0, *pflags);
 		printf("\n");
@@ -1232,10 +1222,6 @@ fetch(long *f, int a, int b, FILE *lb, int ch, int oldfile, int flags)
 			nc = hw;
 		if (diff_format != D_IFDEF && diff_format != D_GFORMAT &&
 		    ch != '\0') {
-			if (color && (ch == '>' || ch == '+'))
-				printf("\033[%sm", add_code);
-			else if (color && (ch == '<' || ch == '-'))
-				printf("\033[%sm", del_code);
 			printf("%c", ch);
 			if (Tflag && (diff_format == D_NORMAL ||
 			    diff_format == D_CONTEXT ||
@@ -1298,10 +1284,7 @@ fetch(long *f, int a, int b, FILE *lb, int ch, int oldfile, int flags)
 				}
 				/* when side-by-side, do not print a newline */
 				if (diff_format != D_SIDEBYSIDE || c != '\n') {
-					if (color && c == '\n')
-						printf("\033[m%c", c);
-					else
-						printf("%c", c);
+					printf("%c", c);
 					col++;
 				}
 			}
@@ -1310,8 +1293,6 @@ fetch(long *f, int a, int b, FILE *lb, int ch, int oldfile, int flags)
 			lastc = c;
 		}
 	}
-	if (color && diff_format == D_SIDEBYSIDE)
-		printf("\033[m");
 	return (col);
 }
 

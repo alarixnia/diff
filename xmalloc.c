@@ -50,12 +50,12 @@ xcalloc(size_t nmemb, size_t size)
 void *
 xreallocarray(void *ptr, size_t nmemb, size_t size)
 {
-	void *new_ptr;
+	void *new_ptr = ptr;
 
-	new_ptr = reallocarray(ptr, nmemb, size);
-	if (new_ptr == NULL)
+	if (reallocarr(&new_ptr, nmemb, size) != 0) {
 		err(2, "xreallocarray: allocating %zu * %zu bytes",
 		    nmemb, size);
+	}
 	return new_ptr;
 }
 

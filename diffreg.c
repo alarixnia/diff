@@ -245,7 +245,6 @@ diffreg(char *file1, char *file2, int flags)
 {
 	FILE *f1, *f2;
 	int i, rval;
-	struct pr *pr = NULL;
 
 	f1 = f2 = NULL;
 	rval = D_SAME;

@@ -114,7 +114,6 @@ static char *splice(char *, char *);
 int
 main(int argc, char **argv)
 {
-	const char *errstr = NULL;
 	char *ep, **oargv;
 	long  l;
 	int   ch, dflags, lastch, gotstdin, prevoptind, newarg;

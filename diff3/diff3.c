@@ -838,7 +838,7 @@ main(int argc, char **argv)
 	int diffargc = 0;
 	int fd13[2], fd23[2];
 	int pd13, pd23;
-	struct kevent *e;
+	struct kevent e[2];
 
 	nblabels = 0;
 	eflag = EFLAG_NONE;
@@ -917,10 +917,6 @@ main(int argc, char **argv)
 	kq = kqueue();
 	if (kq == -1)
 		err(2, "kqueue");
-
-	e = malloc(2 * sizeof(struct kevent));
-	if (e == NULL)
-		err(2, "malloc");
 
 	/* TODO stdio */
 	file1 = argv[0];

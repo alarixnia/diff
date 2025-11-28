@@ -1,7 +1,7 @@
 # $NetBSD$
 
 PROG=	diff
-SRCS=	diff.c diffdir.c diffreg.c xmalloc.c
+SRCS=	diff.c diffdir.c diffreg.c xmalloc.c pr.c
 
 DPADD+=	${LIBM}
 LDADD+=	-lm

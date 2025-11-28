@@ -85,6 +85,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "pr.h"
 #include "diff.h"
 #include "xmalloc.h"
 
@@ -245,6 +246,7 @@ diffreg(char *file1, char *file2, int flags)
 {
 	FILE *f1, *f2;
 	int i, rval;
+	struct pr *pr = NULL;
 
 	f1 = f2 = NULL;
 	rval = D_SAME;
@@ -345,6 +347,9 @@ diffreg(char *file1, char *file2, int flags)
 		goto closem;
 	}
 
+	if (lflag)
+		pr = start_pr(file1, file2);
+
 	switch (files_differ(f1, f2, flags)) {
 	case 0:
 		goto closem;
@@ -411,6 +416,8 @@ diffreg(char *file1, char *file2, int flags)
 	output(file1, f1, file2, f2, flags);
 
 closem:
+	if (pr != NULL)
+		stop_pr(pr);
 	if (anychange) {
 		status |= 1;
 		if (rval == D_SAME)

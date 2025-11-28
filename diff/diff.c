@@ -36,7 +36,7 @@
 #include "diff.h"
 #include "xmalloc.h"
 
-bool	 Nflag, Pflag, rflag, sflag, Tflag, cflag;
+bool	 lflag, Nflag, Pflag, rflag, sflag, Tflag, cflag;
 bool	 ignore_file_case, suppress_common;
 int	 diff_format, diff_context, status;
 int	 width = 130;
@@ -48,7 +48,7 @@ struct stat stb1, stb2;
 struct excludes *excludes_list;
 regex_t	 ignore_re, most_recent_re;
 
-#define	OPTIONS	"0123456789aBbC:cdD:efF:HhI:iL:nNPpqrS:sTtU:uwW:X:x:y"
+#define	OPTIONS	"0123456789aBbC:cdD:efF:HhI:iL:lnNPpqrS:sTtU:uwW:X:x:y"
 enum {
 	OPT_TSIZE = CHAR_MAX + 1,
 	OPT_STRIPCR,
@@ -75,6 +75,7 @@ static struct option longopts[] = {
 	{ "ignore-blank-lines",		no_argument,		0,	'B' },
 	{ "ignore-matching-lines",	required_argument,	0,	'I' },
 	{ "ignore-case",		no_argument,		0,	'i' },
+	{ "paginate",			no_argument,		NULL,	'l' },
 	{ "label",			required_argument,	0,	'L' },
 	{ "new-file",			no_argument,		0,	'N' },
 	{ "rcs",			no_argument,		0,	'n' },
@@ -206,6 +207,9 @@ main(int argc, char **argv)
 				label[1] = optarg;
 			else
 				usage();
+			break;
+		case 'l':
+			lflag = true;
 			break;
 		case 'N':
 			Nflag = true;
@@ -520,18 +524,18 @@ static void
 usage(void)
 {
 	(void)fprintf(stderr,
-	    "usage: diff [-aBbdipTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
+	    "usage: diff [-aBbdilpTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-I pattern] [-F pattern] [-L label] file1 file2\n"
-	    "       diff [-aBbdipTtw] [-I pattern] [-L label] [--ignore-case]\n"
+	    "       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-F pattern] -C number file1 file2\n"
-	    "       diff [-aBbditw] [-I pattern] [--ignore-case] [--no-ignore-case]\n"
+	    "       diff [-aBbdiltw] [-I pattern] [--ignore-case] [--no-ignore-case]\n"
 	    "            [--normal] [--strip-trailing-cr] -D string file1 file2\n"
-	    "       diff [-aBbdipTtw] [-I pattern] [-L label] [--ignore-case]\n"
+	    "       diff [-aBbdilpTtw] [-I pattern] [-L label] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [--strip-trailing-cr]\n"
 	    "            [-F pattern] -U number file1 file2\n"
-	    "       diff [-aBbdiNPprsTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
+	    "       diff [-aBbdilNPprsTtw] [-c | -e | -f | -n | -q | -u] [--ignore-case]\n"
 	    "            [--no-ignore-case] [--normal] [-I pattern] [-L label]\n"
 	    "            [-F pattern] [-S name] [-X file] [-x pattern] dir1 dir2\n"
 	    "       diff [-aBbditwW] [--expand-tabs] [--ignore-all-space]\n"

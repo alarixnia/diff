@@ -169,8 +169,7 @@ enum {
 	VERSION_OPT
 };
 
-/*#define DIFF_PATH "/usr/bin/diff"*/
-#define DIFF_PATH "/encrypt/home/nia/git/diff/diff/diff"
+#define DIFF_PATH "/usr/bin/diff"
 
 #define OPTIONS "3aAeEiL:mTxX"
 static struct option longopts[] = {
@@ -831,7 +830,7 @@ increase(void)
 int
 main(int argc, char **argv)
 {
-	int ch, nblabels, m, n, kq, nke, nleft, i;
+	int ch, nblabels, m, n, kq, nke, nleft;
 	char *labels[] = { NULL, NULL, NULL };
 	const char *diffprog = DIFF_PATH;
 	char *file1, *file2, *file3;

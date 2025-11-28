@@ -70,17 +70,15 @@ static char sccsid[] = "@(#)diff3.c	8.1 (Berkeley) 6/6/93";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-#include <sys/capsicum.h>
-#include <sys/procdesc.h>
 #include <sys/types.h>
 #include <sys/event.h>
 #include <sys/wait.h>
 
-#include <capsicum_helpers.h>
 #include <ctype.h>
 #include <err.h>
 #include <getopt.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <inttypes.h>
@@ -155,9 +153,9 @@ static void keep(int, struct range *);
 static void merge(int, int);
 static void prange(struct range *, bool);
 static void repos(int);
-static void edscript(int) __dead2;
-static void Ascript(int) __dead2;
-static void mergescript(int) __dead2;
+static void edscript(int) __dead;
+static void Ascript(int) __dead;
+static void mergescript(int) __dead;
 static void increase(void);
 static void usage(void);
 static void printrange(FILE *, struct range *);
@@ -171,7 +169,8 @@ enum {
 	VERSION_OPT
 };
 
-#define DIFF_PATH "/usr/bin/diff"
+/*#define DIFF_PATH "/usr/bin/diff"*/
+#define DIFF_PATH "/encrypt/home/nia/git/diff/diff/diff"
 
 #define OPTIONS "3aAeEiL:mTxX"
 static struct option longopts[] = {
@@ -250,7 +249,8 @@ diffexec(const char *diffprog, char **diffargv, int fd[])
 {
 	int pd;
 
-	switch (pdfork(&pd, PD_CLOEXEC)) {
+	pd = fork();
+	switch (pd) {
 	case 0:
 		close(fd[0]);
 		if (dup2(fd[1], STDOUT_FILENO) == -1)
@@ -831,7 +831,7 @@ increase(void)
 int
 main(int argc, char **argv)
 {
-	int ch, nblabels, status, m, n, kq, nke, nleft, i;
+	int ch, nblabels, m, n, kq, nke, nleft, i;
 	char *labels[] = { NULL, NULL, NULL };
 	const char *diffprog = DIFF_PATH;
 	char *file1, *file2, *file3;
@@ -839,20 +839,19 @@ main(int argc, char **argv)
 	int diffargc = 0;
 	int fd13[2], fd23[2];
 	int pd13, pd23;
-	cap_rights_t rights_ro;
 	struct kevent *e;
 
 	nblabels = 0;
 	eflag = EFLAG_NONE;
 	oflag = 0;
-	diffargv[diffargc++] = __DECONST(char *, diffprog);
+	diffargv[diffargc++] = __UNCONST(diffprog);
 	while ((ch = getopt_long(argc, argv, OPTIONS, longopts, NULL)) != -1) {
 		switch (ch) {
 		case '3':
 			eflag = EFLAG_NOOVERLAP;
 			break;
 		case 'a':
-			diffargv[diffargc++] = __DECONST(char *, "-a");
+			diffargv[diffargc++] = __UNCONST("-a");
 			break;
 		case 'A':
 			Aflag = 1;
@@ -893,7 +892,7 @@ main(int argc, char **argv)
 			break;
 		case STRIPCR_OPT:
 			strip_cr = 1;
-			diffargv[diffargc++] = __DECONST(char *, "--strip-trailing-cr");
+			diffargv[diffargc++] = __UNCONST("--strip-trailing-cr");
 			break;
 		case HELP_OPT:
 			usage();
@@ -915,11 +914,6 @@ main(int argc, char **argv)
 		usage();
 		exit(2);
 	}
-
-	if (caph_limit_stdio() == -1)
-		err(2, "unable to limit stdio");
-
-	cap_rights_init(&rights_ro, CAP_READ, CAP_FSTAT, CAP_SEEK);
 
 	kq = kqueue();
 	if (kq == -1)
@@ -951,20 +945,14 @@ main(int argc, char **argv)
 	fp[0] = fopen(file1, "r");
 	if (fp[0] == NULL)
 		err(2, "Can't open %s", file1);
-	if (caph_rights_limit(fileno(fp[0]), &rights_ro) < 0)
-		err(2, "unable to limit rights on: %s", file1);
 
 	fp[1] = fopen(file2, "r");
 	if (fp[1] == NULL)
 		err(2, "Can't open %s", file2);
-	if (caph_rights_limit(fileno(fp[1]), &rights_ro) < 0)
-		err(2, "unable to limit rights on: %s", file2);
 
 	fp[2] = fopen(file3, "r");
 	if (fp[2] == NULL)
 		err(2, "Can't open %s", file3);
-	if (caph_rights_limit(fileno(fp[2]), &rights_ro) < 0)
-		err(2, "unable to limit rights on: %s", file3);
 
 	if (pipe(fd13))
 		err(2, "pipe");
@@ -977,21 +965,17 @@ main(int argc, char **argv)
 
 	nleft = 0;
 	pd13 = diffexec(diffprog, diffargv, fd13);
-	EV_SET(e + nleft , pd13, EVFILT_PROCDESC, EV_ADD, NOTE_EXIT, 0, NULL);
+	EV_SET(e + nleft , pd13, EVFILT_PROC, EV_ADD, NOTE_EXIT, 0, NULL);
 	if (kevent(kq, e + nleft, 1, NULL, 0, NULL) == -1)
 		err(2, "kevent1");
 	nleft++;
 
 	diffargv[diffargc] = file2;
 	pd23 = diffexec(diffprog, diffargv, fd23);
-	EV_SET(e + nleft , pd23, EVFILT_PROCDESC, EV_ADD, NOTE_EXIT, 0, NULL);
+	EV_SET(e + nleft , pd23, EVFILT_PROC, EV_ADD, NOTE_EXIT, 0, NULL);
 	if (kevent(kq, e + nleft, 1, NULL, 0, NULL) == -1)
 		err(2, "kevent2");
 	nleft++;
-
-	caph_cache_catpages();
-	if (caph_enter() < 0)
-		err(2, "unable to enter capability mode");
 
 	/* parse diffs */
 	increase();
@@ -1003,14 +987,6 @@ main(int argc, char **argv)
 		nke = kevent(kq, NULL, 0, e, nleft, NULL);
 		if (nke == -1)
 			err(2, "kevent");
-		for (i = 0; i < nke; i++) {
-			status = e[i].data;
-			if (WIFEXITED(status) && WEXITSTATUS(status) >= 2)
-				errx(2, "diff exited abnormally");
-			else if (WIFSIGNALED(status))
-				errx(2, "diff killed by signal %d",
-				    WTERMSIG(status));
-		}
 		nleft -= nke;
 	}
 	merge(m, n);
